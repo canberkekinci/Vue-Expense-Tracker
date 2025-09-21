@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps } from "vue";
+import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
   transactions: {
@@ -7,18 +7,24 @@ const props = defineProps({
     required: true,
   },
 });
+
+const emit = defineEmits(['transactionDeleted']);
+
+const handleDelete = (index) => {
+  emit('transactionDeleted', index)
+}
 </script>
 
 <template>
   <h3>History</h3>
   <ul id="list" class="list">
     <li
-      v-for="transaction in transactions"
+      v-for="(transaction, index) in transactions"
       :key="transaction.id"
       :class="transaction.amount < 0 ? 'minus' : 'plus'"
     >
       {{ transaction.text }} <span>{{ transaction.amount }}$</span>
-      <button class="delete-btn">x</button>
+      <button @click="handleDelete(index)" class="delete-btn">x</button>
     </li>
   </ul>
 </template>

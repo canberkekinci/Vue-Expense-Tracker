@@ -1,24 +1,26 @@
 <script setup>
-import { reactive, defineProps } from "vue";
+import { reactive, defineEmits } from "vue";
+import { useToast } from "vue-toastification";
 
 const form = reactive({
   text: "",
   amount: "",
 });
 
-const props = defineProps({
-  transactions: {
-    type: Array,
-    required: true,
-  },
-});
+const emit = defineEmits(['transactionSubmitted']);
+
+const toast = useToast();
 
 const handleSubmit = () => {
-  props.transactions.push({
-    id: props.transactions.slice(-1)[0].id + 1,
-    text: form.text,
-    amount: Number(form.amount),
-  });
+  if (!form.text || !form.amount) {
+    toast.error("Both fields must be filled.");
+    return;
+  } else {
+    emit('transactionSubmitted', form);
+    toast.success("Transaction added successfully.");
+    form.text = "";
+    form.amount = "";
+  }
 };
 </script>
 
